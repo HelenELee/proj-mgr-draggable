@@ -25,7 +25,7 @@ type Listener = (items:Project[]) => void;
 
 //Prohect Type Class
 class Project {
-  public constructor(public id: string, public title: string, public description: string, public people:number, public state: ProjectStatus) {
+  public constructor(public id: string, public title: string, public description: string, public people:number, public status: ProjectStatus) {
 
   }
 }
@@ -65,6 +65,7 @@ class ProjectState {
   //the ProjectList function adds the function to the assignedProjects array in ProjectList and renders the list of projects
   addListener(listenerFn: Listener) {
     this.listeners.push(listenerFn);
+    console.log("LISTENERS : " + this.listeners)
   }
 }
 
@@ -110,7 +111,7 @@ function validate(dataToValidate : Validateable) {
   assignedProjects: Project[];
   
   //pass private variable so this automatically makes 'type' a property of the class
-  constructor(private type: 'active' | 'finished') {
+    constructor(private type: 'active' | 'finished') {
     //template element in index.html holds HTML that is not visible - 
     this.templateElement = document.getElementById('project-list')! as HTMLTemplateElement;
     this.hostElement = document.getElementById('app')! as HTMLDivElement;
@@ -123,10 +124,16 @@ function validate(dataToValidate : Validateable) {
     //use 'this' so typescript does not complain that we are not using the parameter
     this.element.id = `${this.type}-projects`;
 
-    //overwrite assigned projects with new array of projects
-    //pass addListener a function
+    //overwrite assigned projects with new array of projects and pass addListener a function
     projectState.addListener((projects: Project[]) => {
-      this.assignedProjects = projects;
+      //filter first so only relevant projects are added to this ProjectList
+      const relevantProjects = projects.filter(prj => {
+        if (this.type === 'active') {
+          return prj.status === ProjectStatus.Active;
+        }
+        return prj.status === ProjectStatus.Finished;
+      });
+      this.assignedProjects = relevantProjects;
       this.renderProjects();
     });
 
@@ -136,6 +143,7 @@ function validate(dataToValidate : Validateable) {
 
   private renderProjects() {
     const listEl = document.getElementById(`${this.type}-projects-list`)! as HTMLUListElement;
+    listEl.innerHTML = ''; //clear all previous displayed projects before displaying new ones
     for (const prjItem of this.assignedProjects) {
       const listItem = document.createElement('li');
       listItem.textContent = prjItem.title;
@@ -152,7 +160,7 @@ function validate(dataToValidate : Validateable) {
   private renderContent() {
     const listId = `${this.type}-projects-list`;
     this.element.querySelector('ul')!.id = listId;
-    this.element.querySelector('h2')!.textContent = this.type.toUpperCase() + " PROJECTS";
+    this.element.querySelector('h2')!.textContent = this.type.toString().toUpperCase() + " PROJECTS";
   }
 }
 
