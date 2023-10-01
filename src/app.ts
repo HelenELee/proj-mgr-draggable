@@ -78,6 +78,7 @@ class ProjectState extends State<Project> {
   //the ProjectList class adds the function to the assignedProjects array in ProjectList and renders the list of projects
   addListener(listenerFn: Listener<Project>) {
     this.listeners.push(listenerFn);
+    console.log("LISTENERS : " + this.listeners)
   }
 }
 
@@ -173,7 +174,7 @@ abstract class Component<T extends HTMLElement, U extends HTMLElement> {
   //setup listener (function) - updates assignedProjects i.e the list of projects for this ProjectList and renders them
   configure() {
     projectState.addListener((projects: Project[]) => {
-      //filter out active/complete projects
+      //filter out active/complete projects   
       const relevantProjects = projects.filter(prj => {
         if (this.type === 'active') {
           return prj.status === ProjectStatus.Active;
@@ -192,7 +193,7 @@ abstract class Component<T extends HTMLElement, U extends HTMLElement> {
 
   private renderProjects() {
     const listEl = document.getElementById(`${this.type}-projects-list`)! as HTMLUListElement;
-    listEl.innerHTML = '';
+    listEl.innerHTML = ''; //clear all previous displayed projects before displaying new ones
     for (const prjItem of this.assignedProjects) {
       const listItem = document.createElement('li');
       listItem.textContent = prjItem.title;
