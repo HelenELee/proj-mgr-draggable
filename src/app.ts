@@ -202,7 +202,7 @@ abstract class Component<T extends HTMLElement, U extends HTMLElement> {
   }
 }
 
-// ProjectInput Class
+// ProjectInput Class extends component
 class ProjectInput extends Component <HTMLDivElement, HTMLFormElement>{
   titleInputElement: HTMLInputElement;
   descriptionInputElement: HTMLInputElement;
