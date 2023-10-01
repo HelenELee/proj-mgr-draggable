@@ -16,12 +16,24 @@ function autobind(
   return adjDescriptor;
 }
 */
+//use enum as we only have two types of values here so they are like constants
+//use them when creating a new project and putting projecst into correct list
+enum ProjectStatus {Active, Finished}
 
+//definition of what a listener is ie a function that accepts an array of projects and returns noting (void). We are not iterested in the return type.
+type Listener = (items:Project[]) => void;
+
+//Prohect Type Class
+class Project {
+  public constructor(public id: string, public title: string, public description: string, public people:number, public state: ProjectStatus) {
+
+  }
+}
 //this is a singleton class - can only create one instance of it.
 
 class ProjectState {
-  private listeners: any[] = []; //array of functions called when we add a new project
-  private projects: any[] = [];
+  private listeners: Listener[] = []; //array of functions called when we add a new project
+  private projects: Project[] = [];
   private static instance: ProjectState;
 
   private constructor() {}
@@ -36,22 +48,22 @@ class ProjectState {
   }
   //track a project - add to projecst array and listeners
   addProject(title: string, description: string, numPeople: number) {
-    const newProject = {
-      id: Math.random().toString(), //not necessarily guaranteed to be unique but ok for this project
-      title: title,
-      description: description,
-      people: numPeople,
-    }
+    //note id not necessarily guaranteed to be unique but ok for this project
+    const newProject = new Project(Math.random().toString(), title, description, numPeople, ProjectStatus.Active)
+    
 
     this.projects.push(newProject);
     for (const listenerFn of this.listeners) {
       //call function with copy of projects array not original as we dont want original changed
+      //use slice to get copy of array - start and end parameters not provided so get whole array returned
       listenerFn(this.projects.slice());
 
     }
   }
 
-  addListener(listenerFn: Function) {
+  //this is an array of functions, when you create a new ProjectList the constructor adds a new function to this array
+  //the ProjectList function adds the function to the assignedProjects array in ProjectList and renders the list of projects
+  addListener(listenerFn: Listener) {
     this.listeners.push(listenerFn);
   }
 }
@@ -95,7 +107,7 @@ function validate(dataToValidate : Validateable) {
   templateElement: HTMLTemplateElement;
   hostElement: HTMLDivElement; //there are various types of HTML elements so use specific one if available
   element: HTMLElement; //this is a section but there are no HTMLSection types!
-  assignedProjects: any[];
+  assignedProjects: Project[];
   
   //pass private variable so this automatically makes 'type' a property of the class
   constructor(private type: 'active' | 'finished') {
@@ -113,7 +125,7 @@ function validate(dataToValidate : Validateable) {
 
     //overwrite assigned projects with new array of projects
     //pass addListener a function
-    projectState.addListener((projects: any[]) => {
+    projectState.addListener((projects: Project[]) => {
       this.assignedProjects = projects;
       this.renderProjects();
     });
