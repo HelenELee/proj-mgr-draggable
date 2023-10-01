@@ -16,7 +16,6 @@ function autobind(
   return adjDescriptor;
 }
 */
-
 //this is a singleton class - can only create one instance of it.
 
 class ProjectState {
