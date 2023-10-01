@@ -127,6 +127,7 @@ function validate(dataToValidate : Validateable) {
     //overwrite assigned projects with new array of projects
     //pass addListener a function
     projectState.addListener((projects: Project[]) => {
+      //filter first so only relevant projects are added to this ProjectList
       const relevantProjects = projects.filter(prj => {
         if (this.type === 'active') {
           return prj.status === ProjectStatus.Active;
