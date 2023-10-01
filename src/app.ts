@@ -34,7 +34,7 @@ class ProjectState {
     }
     return ProjectState.instance;
   }
-
+  //track a project - add to projecst array and listeners
   addProject(title: string, description: string, numPeople: number) {
     const newProject = {
       id: Math.random().toString(), //not necessarily guaranteed to be unique but ok for this project
