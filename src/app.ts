@@ -18,7 +18,6 @@ function autobind(
 */
 //this is a singleton class - can only create one instance of it.
 
-
 class ProjectState {
   private listeners: any[] = []; //array of functions called when we add a new project
   private projects: any[] = [];
