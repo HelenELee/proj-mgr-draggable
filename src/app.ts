@@ -124,8 +124,7 @@ function validate(dataToValidate : Validateable) {
     //use 'this' so typescript does not complain that we are not using the parameter
     this.element.id = `${this.type}-projects`;
 
-    //overwrite assigned projects with new array of projects
-    //pass addListener a function
+    //overwrite assigned projects with new array of projects and pass addListener a function
     projectState.addListener((projects: Project[]) => {
       //filter first so only relevant projects are added to this ProjectList
       const relevantProjects = projects.filter(prj => {
